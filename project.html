@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Project Template</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<style type="text/css">
+			body {
+				margin: 0 auto;
+				max-width: 40em;
+				width: 88%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id="app">
+			<p>Loading the latest skwaks...</p>
+		</div>
+
+
+		<script>
+            // get the app element
+            let app = document.querySelector('#app');
+
+            // render a message when there are no skwaks to display
+            function renderNoSkwaks() {
+                app.innerHTML =`<p>Sorry matey! There are no skwaks at this time. Arr...</p>`
+            }
+
+            function renderSkwaks(data) {
+
+                // make sure there are skwaks to render 
+                if(!data.skwaks.length) {
+                    renderNoSkwaks()
+                    return;
+                }
+
+                //otherwise, render HTML into the UI
+                app.innerHTML = 
+                `<h1>${data.username}'s skwaks</h1>
+                <div class="skwaks">
+                    ${data.skwaks.map( function(skwak) {
+                        return `
+                        <article class=skwak>
+                            <a class="skwak-date" href="${skwak.link}">${skwak.date}</a>
+                            <div class="skwak-content">${skwak.content}</div>
+                        </article>
+                        `
+
+                    }).join('')}
+                </div>
+                <p><em>Powered by the ${data.service} API</em></p>
+                `
+            }
+
+            //fetch the API data
+			fetch('https://vanillajsguides.com/api/skwak.json').then(function (response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw response;
+            }).then(function (data) {
+
+                //render data into the UI
+                renderSkwaks(data)
+                console.log(data)
+            }).catch(function(error) {
+                console.warn(error)
+                renderNoSkwaks();
+            })
+		</script>
+	</body>
+</html>
